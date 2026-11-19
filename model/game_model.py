@@ -40,6 +40,7 @@ class GameModel:
         self.car reste la voiture du joueur 1, car le contrôleur l'utilise
         encore ; self.cars contient les deux voitures.
         """
+        #a remplacer apres avoir implementé la commande du joueur 2, ici pour ne pas avoir d'erreur, on laisse l'exemple voiture 1
         #a remplacer par la position de départ du circuit, ici c'est juste un exemple
         self.car = Car(7, 1)
         self.cars = [self.car, Car(8, 1, couleur=(50, 110, 230))] # couleur de la voiture du joueur 2
