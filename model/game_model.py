@@ -10,7 +10,7 @@ class GameModel:
         self.state: str = GameState.MENU
         self.circuit: Circuit | None = None
         self.car: Car | None = None
-        self.noms_circuits: list[str] = ["Anneau", "Désert"] # a remplacer par une liste de circuits réels
+        self.noms_circuits = ["Anneau", "Désert", "Montagne"] # a remplacer par une liste de circuits réelsgit
         self.index_selection: int = 0
 
     def circuit_suivant(self) -> None:
