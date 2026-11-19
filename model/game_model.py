@@ -10,6 +10,22 @@ class GameModel:
         self.state: str = GameState.MENU
         self.circuit: Circuit | None = None
         self.car: Car | None = None
+        self.noms_circuits: list[str] = ["Anneau", "Désert"] # a remplacer par une liste de circuits réels
+        self.index_selection: int = 0
+
+    def circuit_suivant(self) -> None:
+        """Sélectionne le circuit suivant (revient au premier après le dernier)."""
+        if self.index_selection < len(self.noms_circuits) - 1: #eviter l'index out of range
+            self.index_selection += 1
+        else:
+            self.index_selection = 0
+
+    def circuit_precedent(self) -> None:
+        """Sélectionne le circuit précédent (va au dernier avant le premier)."""
+        if self.index_selection > 0: #eviter l'index out of range
+            self.index_selection -= 1
+        else:
+            self.index_selection = len(self.noms_circuits) - 1
 
     def load_circuit(self) -> None:
         grid = [[RoadTile(col=col_idx, row=row_idx)
