@@ -1,0 +1,8 @@
+model/Projet-Python/
+__pycache__/
+*.pyc
+.vscode/
+.venv/
+venv/
+.idea/
+.DS_Store
