@@ -10,6 +10,7 @@ class GameModel:
         self.state: str = GameState.MENU
         self.circuit: Circuit | None = None
         self.car: Car | None = None
+        self.cars: list[Car] = []
         self.noms_circuits = ["Anneau", "Désert", "Montagne"] # a remplacer par une liste de circuits réelsgit
         self.index_selection: int = 0
 
@@ -35,8 +36,16 @@ class GameModel:
 
     def spawn_car(self) -> None:
         self.car = Car(7, 1)
+        """Crée les deux voitures côte à côte.
+        self.car reste la voiture du joueur 1, car le contrôleur l'utilise
+        encore ; self.cars contient les deux voitures.
+        """
+        #a remplacer par la position de départ du circuit, ici c'est juste un exemple
+        self.car = Car(7, 1)
+        self.cars = [self.car, Car(8, 1, couleur=(50, 110, 230))] # couleur de la voiture du joueur 2
 
     def update(self) -> None:
         if self.state != GameState.RACING or self.circuit is None:
             return
-        self.car.update_position()
+        for car in self.cars:
+            car.update_position()
