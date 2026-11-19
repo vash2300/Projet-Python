@@ -6,12 +6,12 @@ from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_D
 
 class Car:
 
-    def __init__(self, start_col: int, start_row: int):
+    def __init__(self, start_col: int, start_row: int, couleur=(255, 0, 0)):
         self.x = start_col * TILE_SIZE + TILE_SIZE // 2
         self.y = start_row * TILE_SIZE + TILE_SIZE // 2
         self.speed: float = 0.0
         self.angle: float = 0.0
-        self.sprite = self.build_sprite()
+        self.sprite = self.build_sprite(couleur)
 
     def accelerate(self) -> None:
         self.speed += CAR_ACCELERATION
@@ -19,9 +19,9 @@ class Car:
     def update_position(self) -> None:
         self.y += self.speed
 
-    def build_sprite(self) -> pygame.Surface:
+    def build_sprite(self, couleur) -> pygame.Surface:
         surf = pygame.Surface((CAR_WIDTH, CAR_HEIGHT), pygame.SRCALPHA)
-        pygame.draw.rect(surf, (255, 0, 0), (0, 0, CAR_WIDTH,
+        pygame.draw.rect(surf, couleur, (0, 0, CAR_WIDTH,
                          CAR_HEIGHT), border_radius=5)
         return surf
 
