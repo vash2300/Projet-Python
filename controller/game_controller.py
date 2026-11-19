@@ -82,6 +82,8 @@ class GameController:
 
         if state == GameState.MENU:
             self.handle_menu_key(key)
+        elif state == GameState.CIRCUIT_SELECT:
+            self.handle_select_key(key)
 
     def handle_menu_key(self, key: int) -> None:
         """
@@ -95,11 +97,28 @@ class GameController:
         key : int
             Code Pygame correspondant à la touche pressée.
         """
+        """"
         if key == pygame.K_RETURN:
             self.model.load_circuit()
             self.model.state = GameState.RACING
+        """
+        if key == pygame.K_RETURN:
+            self.model.state = GameState.CIRCUIT_SELECT #selection du circuit sur le menu
         elif key == pygame.K_ESCAPE:
             self.quit()
+
+    def handle_select_key(self, key: int) -> None:
+        """Choix du circuit : flèches pour changer, Entrée pour jouer,
+        Échap pour revenir au menu."""
+        if key == pygame.K_UP:
+            self.model.circuit_precedent()
+        elif key == pygame.K_DOWN:
+            self.model.circuit_suivant()
+        elif key == pygame.K_RETURN:
+            self.model.load_circuit()
+            self.model.state = GameState.RACING
+        elif key == pygame.K_ESCAPE:
+            self.model.state = GameState.MENU
 
     def update(self) -> None:
         if self.model.state != GameState.RACING:
