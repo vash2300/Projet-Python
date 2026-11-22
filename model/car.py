@@ -1,6 +1,6 @@
 import pygame
 import math
-from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_DECELERATION)
+from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_DECELERATION, CAR_TURN_SPEED)
 
 
 
@@ -17,7 +17,11 @@ class Car:
         self.speed += CAR_ACCELERATION
 
     def update_position(self) -> None:
-        self.y += self.speed
+        #self.y += self.speed #code original par défaut
+        #modif de update_position pour pouvoir faire tourner la voiture
+        rad = math.radians(self.angle)
+        self.x += math.sin(rad)* self.speed
+        self.y += math.cos(rad)* self.speed
 
     def build_sprite(self, couleur) -> pygame.Surface:
         surf = pygame.Surface((CAR_WIDTH, CAR_HEIGHT), pygame.SRCALPHA)
@@ -33,3 +37,13 @@ class Car:
     #implement deceleration and reverse methods
     def decelerate(self) -> None:
         self.speed -= CAR_DECELERATION
+
+    # Implémentation des virages : Tourner à droite/gauche
+    def turn(self, direction: int) -> None:
+        """
+        Méthode permettant de faire tourner la voiture.
+        l'angle de la voiture change en fonction de la direction (droite : 1 et gauche : -1) 
+        à la même vitesse que accel et decel
+        """
+        if self.speed != 0 :
+            self.angle += direction * CAR_TURN_SPEED

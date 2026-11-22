@@ -4,6 +4,8 @@ import pygame
 MAPPING = {
     pygame.K_UP:     "accelerate",
     pygame.K_DOWN:   "decelerate",
+    pygame.K_LEFT:   "turn_left", # Ajout de la touche fleche gauche
+    pygame.K_RIGHT:  "turn_right", # Ajout de la touche flèche droite
 }
 
 

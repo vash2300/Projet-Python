@@ -150,6 +150,10 @@ class GameController:
             car.accelerate()
         if player_input['decelerate']:
             car.decelerate()
+        if player_input['turn_left']: # Ajout de la commande du joueur tourner à gauche
+            car.turn(-1)
+        if player_input['turn_right']: # Ajout de la commande du joueur tourner à droite
+            car.turn(1)
 
     def render(self) -> None:
         """
