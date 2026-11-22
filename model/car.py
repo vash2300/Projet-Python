@@ -6,7 +6,7 @@ from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_D
 
 class Car:
 
-    def __init__(self, start_col: int, start_row: int, couleur=(255, 0, 0)):
+    def __init__(self, start_col: int, start_row: int, couleur):
         self.x = start_col * TILE_SIZE + TILE_SIZE // 2
         self.y = start_row * TILE_SIZE + TILE_SIZE // 2
         self.speed: float = 0.0
