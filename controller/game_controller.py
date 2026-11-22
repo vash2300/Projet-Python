@@ -121,6 +121,13 @@ class GameController:
             self.model.state = GameState.MENU
 
     def update(self) -> None:
+        """
+        C'est une mise à jour de l'état du du jeu.
+        
+        La fonction vérifie que le jeu est en mode RACING.
+        Elle récupère les entrées du joueur (input_handler.get_inputs()), les applique à la voiture (apply_input()).
+        Elle demande au modèle de mettre à jour la pos (model.update())
+        """
         if self.model.state != GameState.RACING:
             return
 
@@ -130,15 +137,30 @@ class GameController:
         self.model.update()
 
     def apply_input(self, car, player_input) -> None:
+        """
+        Applique les commandes du joueur à la voiture correspondante.
+
+        parameters
+        ----------
+            car : Car
+                Class Car, la voiture controlable par les joueurs
+
+        """
         if player_input['accelerate']:
             car.accelerate()
         if player_input['decelerate']:
             car.decelerate()
 
     def render(self) -> None:
+        """
+        Actualisation de l'affichage. Le model est envoyée à la vue pour pouvoir représenter l'état actuel du jeu
+        """
         self.view.draw(self.model)
 
     def quit(self) -> None:
+        """
+        Arrêt du jeu et de pygame
+        """
         self.running = False
         pygame.quit()
         sys.exit()
