@@ -10,6 +10,7 @@ class Car:
     La classe definie les positions x et y de la voiture.
     Elle définie sa vitesse et son angle de braquage en degrés.
     Elle à un sprite : rectangle de couleur qui tourne (avant d'etre afficher)
+    Gère la physique de la voiture
 
     Attributes
     ----------
@@ -65,8 +66,15 @@ class Car:
         à la même vitesse que accel et decel
         consigne : Tourner à gauche : augmente l’angle de braquage et Tourner à droite : diminue l’angle
         """
-        #if self.speed != 0 : # Pour éviter de tourner sur place
+        if self.speed > 0.1:
+            self.angle += direction #* CAR_TURN_SPEED
+        elif self.speed < -0.1:
+            self.angle -= direction #* CAR_TURN_SPEED
+        
+        """ Code de base fonctionne tres bien avec Drive mais pas Reverse
+        if self.speed != 0 : # Pour éviter de tourner sur place
         self.angle += direction #* CAR_TURN_SPEED # gauche => direction = +1 et droite => direction = -1
+        """
 
     def update_position(self) -> None:
         """
