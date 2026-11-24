@@ -65,8 +65,8 @@ class Car:
         à la même vitesse que accel et decel
         consigne : Tourner à gauche : augmente l’angle de braquage et Tourner à droite : diminue l’angle
         """
-        if self.speed != 0 : # Pour éviter de tourner sur place
-            self.angle += direction * CAR_TURN_SPEED
+        #if self.speed != 0 : # Pour éviter de tourner sur place
+        self.angle += direction #* CAR_TURN_SPEED # gauche => direction = +1 et droite => direction = -1
 
     def update_position(self) -> None:
         """
@@ -78,8 +78,8 @@ class Car:
         #self.y += self.speed #code original par défaut
         #modif de update_position pour pouvoir faire tourner la voiture
         rad = math.radians(self.angle)
-        self.x += math.sin(rad)* self.speed
-        self.y += math.cos(rad)* self.speed
+        self.x -= math.sin(rad)* self.speed
+        self.y -= math.cos(rad)* self.speed
 
     def build_sprite(self, couleur) -> pygame.Surface:
         """
@@ -99,6 +99,12 @@ class Car:
         surf = pygame.Surface((CAR_WIDTH, CAR_HEIGHT), pygame.SRCALPHA)
         pygame.draw.rect(surf, couleur, (0, 0, CAR_WIDTH,
                          CAR_HEIGHT), border_radius=5)
+        
+        # Pare-brise : couleur éclaircie, placé sur l'avant de la voiture
+        pare_brise = tuple(min(255, c + 80) for c in couleur)
+        pygame.draw.rect(surf, pare_brise,
+                (2, 2, CAR_WIDTH - 4,
+                 CAR_HEIGHT // 4), border_radius=3)
         return surf
 
     def get_rotated_sprite(self) -> tuple[pygame.Surface, pygame.Rect]:
@@ -112,6 +118,6 @@ class Car:
         rect : pygame.Rect
             Rectangle de la taille de "rotated", centré sur "x,y"
         """
-        rotated = pygame.transform.rotate(self.sprite, -self.angle) # rotate an image rotate(surface, angle) -> Surface. Unfiltered counterclockwise rotation. The angle argument represents degrees and can be any floating point value. Negative angle amounts will rotate clockwise.
+        rotated = pygame.transform.rotate(self.sprite, self.angle) # rotate an image rotate(surface, angle) -> Surface. Unfiltered counterclockwise rotation. The angle argument represents degrees and can be any floating point value. Negative angle amounts will rotate clockwise.
         rect = rotated.get_rect(center=(int(self.x), int(self.y)))
         return rotated, rect
