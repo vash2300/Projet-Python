@@ -19,11 +19,19 @@ class Car:
     y : float
         Position de la voiture sur l'axe des ordonnées (verticale) en pixels
     speed : float
-        Vitesse de la voiture (avance si elle est >0 et recule si <0)
+        Vitesse de la voiture (avance si elle est >0 et recule si <0) (vitesse longitudinale)
     angle : float
-        Orientation de la voiture en degrés
+        Orientation de la voiture en degrés. ###Direction vers laquelle la voiture est orientée
     sprite : pygame.Surface
         Forme de base / d'origine de la voiture
+    velocity_angle : float
+        Représente l'angle de la trajectoire (réelle) de le voiture
+    steering : int
+        Direction du "volant" commande du joueur (Ne tourne pas = 0, Tourne à gauche = -1, Tourne à droite = 1)
+    drift_intensity : float
+        Indique l'intensité du drift (facteur de vitesse * |steering|)
+    drifting : bool
+        Indique si la voiture dérape ou pas
     """
 
     def __init__(self, start_col: int, start_row: int, couleur):
@@ -41,9 +49,14 @@ class Car:
         """
         self.x = start_col * TILE_SIZE + TILE_SIZE // 2
         self.y = start_row * TILE_SIZE + TILE_SIZE // 2
-        self.speed: float = 0.0
-        self.angle: float = 0.0
+        self.speed: float = 0.0 #indique à quelle vitesse la voiture avance ou recule, mais pas la direction dans laquelle elle se déplace sur l'écran.
+        self.angle: float = 0.0 #représente toujours la direction vers laquelle la voiture pointe, même si elle est en train de glisser latéralement.
         self.sprite = self.build_sprite(couleur)
+        #Param pr le drift
+        self.velocity_angle: float = 0.0 #Direction dans laquelle la voiture se déplace réellement
+        self.steering : int = 0 #Direction du volant, gauche, droite ou neutre
+        self.drift_intensity: float = 0.0  #Intensité du drift
+        self.drifting = False
 
     def accelerate(self) -> None:
         """
@@ -85,7 +98,7 @@ class Car:
         """
         #self.y += self.speed #code original par défaut
         #modif de update_position pour pouvoir faire tourner la voiture
-        rad = math.radians(self.angle)
+        rad = math.radians(self.angle) #Pour le drift, on remplace self.angle par self.velocity_angle
         self.x -= math.sin(rad)* self.speed
         self.y -= math.cos(rad)* self.speed
 
