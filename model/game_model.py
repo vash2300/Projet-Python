@@ -33,6 +33,11 @@ class GameModel:
         self.noms_circuits = ["Anneau", "Désert", "Montagne"] # a remplacer par une liste de circuits réels
         self.index_selection: int = 0 #indice du circuit sélectionné dans la liste des circuits 
 
+        #a modifier les 3 apres la fonctionalite bloc implementer
+        self.n_tours = 3              # nombre de tours pour gagner
+        self.tours = [0, 0]           # tours terminés : [joueur 1, joueur 2]
+        self.temps_boost = [0, 0]     # minuteur du boost : [joueur 1, joueur 2]
+
     def circuit_suivant(self) -> None:
         """Sélectionne le circuit suivant (revient au premier après le dernier)."""
         if self.index_selection < len(self.noms_circuits) - 1: #eviter l'index out of range
