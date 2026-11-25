@@ -21,6 +21,7 @@ class GameView:
             self._draw_select(model)
         elif model.state == GameState.RACING:
             self._draw_racing(model)
+            self._draw_tours(model)
         pygame.display.flip()
 
     def _draw_menu(self, model: GameModel) -> None:
@@ -81,4 +82,23 @@ class GameView:
         for car in model.cars:
             surf, rect = car.get_rotated_sprite()
             self.screen.blit(surf, rect)
+
+    def _draw_tours(self, model: GameModel) -> None:
+        """affichage d'infos en haut de l'écran contient le nombre de tours de chaque joueur."""
+        
+        for i in range(2):
+            numero = i + 1
+            tour = model.tours[i] + 1 #dans la n_tours dans game_model
+            texte = f"J{numero}   Tour {tour}/{model.n_tours}"
+
+            if numero == 1: #pour le joueur 1
+                couleur = (255, 0, 0)
+                position = (16, 5)
+            else:
+                couleur = (0, 0, 255)
+                position = (WINDOW_WIDTH - 260, 5)
+            image = self.font.render(texte, True, couleur)
+            self.screen.blit(image, position)
+
+
         
