@@ -1,6 +1,6 @@
 import pygame
 import math
-from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_DECELERATION, CAR_TURN_SPEED)
+from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_DECELERATION, CAR_TURN_SPEED, MAX_SPEED)
 
 
 
@@ -57,6 +57,11 @@ class Car:
         self.steering : int = 0 #Direction du volant, gauche, droite ou neutre
         self.drift_intensity: float = 0.0  #Intensité du drift
         self.drifting = False
+
+        #details de la voiture durant la course
+        self.progress = None  #variable demander dans block.py par jsp qui
+        self.boost_timer = 0        # frames de boost restantes
+        self.boost_strength = 0.0   # vitesse ajoutée à chaque frame de boost
 
     def accelerate(self) -> None:
         """
@@ -142,3 +147,39 @@ class Car:
         rotated = pygame.transform.rotate(self.sprite, self.angle) # rotate an image rotate(surface, angle) -> Surface. Unfiltered counterclockwise rotation. The angle argument represents degrees and can be any floating point value. Negative angle amounts will rotate clockwise.
         rect = rotated.get_rect(center=(int(self.x), int(self.y)))
         return rotated, rect
+
+    def apply_boost(self, strength: float, duration: int) -> None:
+        """
+        Lance un boost (appelée par un bloc 'B').
+
+        Parameters
+        ----------
+        strength : float
+            Vitesse ajoutée à chaque frame pendant le boost.
+        duration : int
+            Durée du boost en frames (60 frames = 1 seconde).
+        """
+        self.boost_strength = strength
+        self.boost_timer = duration
+
+    def update_boost(self) -> None:
+        """
+        Applique le boost pendant une frame, s'il est actif.
+        La vitesse augmente sans dépasser 1,5 fois la vitesse maximale.
+        """
+        if self.boost_timer > 0:
+            if self.speed < MAX_SPEED * 1.5:
+                self.speed += self.boost_strength
+            self.boost_timer -= 1
+
+    def respawn(self) -> None:
+        """
+        Téléporte la voiture à son dernier point de passage, avec une vitesse nulle.
+        Appelée quand la voiture tombe dans le vide ou sort de la carte.
+        """
+        joueur = self.progress                 # le joueur de cette voiture
+        self.x, self.y = joueur.last_checkpoint
+        self.speed = 0.0
+        self.velocity_angle = self.angle
+        self.drifting = False
+        self.boost_timer = 0
