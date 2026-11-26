@@ -61,19 +61,26 @@ class GameModel:
        self.circuit= Circuit.from_file(fichier)# lit le fichier et crée les cases
        self.spawn_car()
 
+
     def spawn_car(self) -> None:
-        """Crée les deux voitures côte à côte.
-        self.car reste la voiture du joueur 1, car le contrôleur l'utilise encore
-        self.cars contient les deux voitures.
-        car(positionX, positionY, couleur) : positionX et positionY sont les coordonnées de la voiture sur la grille, couleur est un tuple RGB
+        """Crée les deux voitures sur les blocs de départ 1 et 2 du circuit.
+        
         """
+        circuit = self.circuit                   # le circuit chargé
+        departs = circuit.starts                 # cases de départ : {1: (col, row), 2: (col, row)}
+        angle = circuit.start_angle - 90      # direction de départ des voitures (coupable à trouver : Angle pas match, soit car ou circuit fautif)
+        #faut trouver qui à mis son angle 0 à droite
 
-        #a remplacer par la position de départ du circuit, ici c'est juste un exemple
-        car_rouge = Car(7,1,(255,0,0)) # couleur de la voiture du joueur 1
-        car_bleue = Car(8, 1,(0,0,255)) # couleur de la voiture du joueur 2
-        self.cars = [car_rouge, car_bleue] #list qui contient les deux voitures, la voiture du joueur 1 et la voiture du joueur 2
+        col, row = departs[1]                    # case du bloc 1
+        car_rouge = Car(col, row, (255, 0, 0))   # voiture du joueur 1
+        car_rouge.angle = angle
 
-        self.car = car_rouge #a retirer apres avoir implementé la commande du joueur 2, ici pour ne pas avoir d'erreur, on laisse l'exemple voiture 1
+        col, row = departs[2]                    # case du bloc 2
+        car_bleue = Car(col, row, (0, 0, 255))   # voiture du joueur 2
+        car_bleue.angle = angle
+
+        self.cars = [car_rouge, car_bleue]
+        self.car = car_rouge
 
     def update(self) -> None:
         if self.state != GameState.RACING or self.circuit is None:
