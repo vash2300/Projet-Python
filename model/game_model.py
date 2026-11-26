@@ -2,6 +2,8 @@ from constants import GameState, GRID_ROWS, GRID_COLS
 from model.car import Car
 from model.circuit import Circuit
 from model.road_tile import RoadTile
+from model.joueur import Joueur
+from model.course import Course
 
 """Contient état du menu, circuit sélectionné, voitures et course en cours.
     car_rouge est la voiture du joueur 1, car_bleue est la voiture du joueur 2
@@ -37,6 +39,9 @@ class GameModel:
         self.n_tours = 3              # nombre de tours pour gagner
         self.tours = [0, 0]           # tours terminés : [joueur 1, joueur 2]
 
+        self.joueurs = []     # joueurs 1 et 2
+        self.race = None      # course en cours
+
 
     def circuit_suivant(self) -> None:
         """Sélectionne le circuit suivant (revient au premier après le dernier)."""
@@ -60,6 +65,7 @@ class GameModel:
        fichier = fichiers[self.index_selection] # celui choisi dans le menu
        self.circuit= Circuit.from_file(fichier)# lit le fichier et crée les cases
        self.spawn_car()
+       self.race = Course(self.circuit, self.joueurs)
 
 
     def spawn_car(self) -> None:
@@ -82,8 +88,17 @@ class GameModel:
         self.cars = [car_rouge, car_bleue]
         self.car = car_rouge
 
+        # Un joueur par voiture ; sa case de départ est son premier point de réapparition
+        joueur1 = Joueur(1, car_rouge, (car_rouge.x, car_rouge.y))
+        joueur2 = Joueur(2, car_bleue, (car_bleue.x, car_bleue.y))
+        self.joueurs = [joueur1, joueur2]
+
     def update(self) -> None:
-        if self.state != GameState.RACING or self.circuit is None:
+        """Avance le jeu d'une frame, déplace les voitures, puis applique
+        les effets des cases (boost, vide, points de passage, arrivée)."""
+        if self.state != GameState.RACING or self.race is None:
             return
         for car in self.cars:
             car.update_position()
+            car.update_boost()
+        self.race.update()
