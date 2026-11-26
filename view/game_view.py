@@ -6,6 +6,7 @@ from constants import (
 )
 from model.game_model import GameModel
 from view.circuit_renderer import CircuitRenderer
+from model.course import Course
 
 
 class GameView:
@@ -82,18 +83,29 @@ class GameView:
 
     def _draw_tours(self, model: GameModel) -> None:
         """affichage d'infos en haut de l'écran contient le nombre de tours de chaque joueur."""
-        
-        for i in range(2):
-            numero = i + 1
-            tour = model.tours[i] + 1 #dans la n_tours dans game_model
-            texte = f"J{numero}   Tour {tour}/{model.n_tours}"
+        course = model.race
+        for joueur in course.joueurs:
+            numero_joueur = joueur.numero
 
-            if numero == 1: #pour le joueur 1
+            tour = joueur.laps + 1
+            texte = f"J{numero_joueur}   Tour {tour}/{course.nb_laps}"
+            texte += f"     Passages {joueur.next_checkpoint}/{course.nb_checkpoints}"
+
+            voiture = joueur.car                # la voiture de ce joueur
+            if voiture.boost_timer > 0:         # le boost est actif
+                texte += "   BOOST !"           # on ajoute le mot à la fin du texte
+
+
+            if numero_joueur == 1: #pour le joueur 1
                 couleur = (255, 0, 0)
                 position = (16, 5)
             else:
                 couleur = (0, 0, 255)
-                position = (WINDOW_WIDTH - 260, 5)
+                position = (WINDOW_WIDTH - 300, 5)
+
+            voiture = joueur.car
+            if voiture.boost_timer > 0:        # le boost est actif
+                texte += "   BOOST !"
             image = self.font.render(texte, True, couleur)
             self.screen.blit(image, position)
 
