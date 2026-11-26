@@ -1,0 +1,18 @@
+# Circuit 1 : anneau simple, ideal pour debuter.
+# Sens : antihoraire. Interieur en vide (pas de raccourci).
+name: Prairie
+laps: 3
+start_angle: 0
+---
+G. G. G. G. G. G. G. G. G. G. G. Gb G. G. G. G.
+G. R. R. R. R. R. I. I. I. I. R. Rb R. R. R. G.
+G. R. R. R. R. R. I. I. I. I. R. Rb R. R. R. G.
+G. R. R. V. V. V. V. V. V. V. V. V. V. R. R. G.
+G. R. R. V. V. V. V. V. V. V. V. V. V. R. R. G.
+Gc Rc Rc V. V. V. V. V. V. V. V. V. V. Ra Ra Ga
+G. D. D. V. V. V. V. V. V. V. V. V. V. R. R. G.
+G. D. D. V. V. V. V. V. V. V. V. V. V. RB RB G.
+G. D. D. V. V. V. V. V. V. V. V. V. V. R. R. G.
+G. R. R. R1 R. RL R. R. R. RB R. R. R. R. R. G.
+G. R. R. R2 R. RL R. R. R. RB R. R. R. R. R. G.
+G. G. G. G. G. GL G. G. G. G. G. G. G. G. G. G.
