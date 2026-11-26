@@ -1,39 +1,60 @@
+"""Joueur : sa voiture et sa progression dans la course."""
+
+
 class Joueur:
-    """Joueur : sa voiture et sa progression dans la course.
+    """Un joueur de la course : sa voiture et où il en est.
 
-    La progression, c'est le nombre de tours terminés, les points de
-    passage franchis pendant le tour en cours et la position où la
-    voiture réapparaît si elle tombe dans le vide.
+    Les blocs du circuit (model/block.py) ne connaissent que la voiture :
+    ils appellent car.progress.pass_checkpoint(...) et
+    car.progress.cross_finish(...). Le joueur s'enregistre donc dans
+    l'attribut progress de sa voiture, pour que les blocs le trouvent.
+
+    Attributes
+    ----------
+
     """
-    def __init__(self, numero_joueur , car, start_position: tuple[float, float]):
-        """Crée le joueur numero(1 ou 2) avec sa voiture.
 
-        `start_position` (en pixels) sert de point de réapparition tant qu'aucun point de passage n'a été franchi.
+    def __init__(self, numero: int, car, pos_depart: tuple[float, float]):
+        """Crée le joueur et le relie à sa voiture.
+
+        Parameters
+        ----------
+        numero : int
+            Numéro du joueur (1 ou 2).
+        car : Car
+            Voiture du joueur.
+        start_position : tuple[float, float]
+            Centre de la case de départ, en pixels. Sert de point de
+            réapparition tant qu'aucun point de passage n'a été franchi.
         """
-        self.numero = numero_joueur
+        self.numero = numero
         self.car = car
-        self.laps: int = 0
-        self.checkpoints = set()   # index franchis pendant ce tour
-        self.last_checkpoint = start_position
-        self.current_tile = None             # case où se trouve la voiture
+        self.laps = 0
+        self.next_checkpoint = 0
+        self.last_checkpoint = pos_depart
+        self.current_tile = None
 
-    #chaque point de passage franchis et le point de réapparition sont enregistrés
-    def point_passage(self, indice: int, position: tuple[float, float]):
-        """Enregistre le point de passage `indice` et en fait le nouveau
-        point de réapparition."""
-        self.checkpoints.add(indice)
-        self.last_checkpoint = position 
+        # Les blocs passent par la voiture pour trouver le joueur
+        car.progress = self
 
-    #verifier si tous les points de passage ont été franchis
-    def tous_les_checkpoints(self, n_checkpoints) -> bool:
-        """Vrai si les `n_checkpoints` points de passage du circuit ont
-        été franchis pendant ce tour."""
-        return len(self.checkpoints) >= n_checkpoints
 
-    #quand un tour est terminé, le nombre de tours est incrémenté et les points de passage sont réinitialisés
-    def tour_termine(self, position: tuple[float, float]):
-        """Termine un tour : +1 tour, on repart de zéro pour les points de
-        passage, et la ligne d'arrivée devient le point de réapparition."""
-        self.laps += 1
-        self.checkpoints.clear()
-        self.last_checkpoint = position
+    def pass_checkpoint(self, index: int, position: tuple[float, float]) -> None:
+        """Valide un point de passage (appelée par un bloc 'C').
+
+        Les points se franchissent dans l'ordre a, b, c... Un point ne
+        compte que si c'est le prochain attendu. Il devient alors le
+        nouveau point de réapparition.
+        """
+        if index == self.next_checkpoint:
+            self.next_checkpoint += 1
+            self.last_checkpoint = position
+
+    def cross_finish(self, nb_checkpoint: int) -> None:
+        """Passage sur la ligne d'arrivée (appelée par un bloc 'L').
+
+        Le tour compte seulement si tous les points de passage ont été
+        franchis. On repart alors de zéro pour le tour suivant.
+        """
+        if self.next_checkpoint == nb_checkpoint:
+            self.laps += 1
+            self.next_checkpoint = 0
