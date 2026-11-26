@@ -30,7 +30,7 @@ class GameModel:
         self.circuit: Circuit | None = None # circuit actuellement chargé
         self.car: Car | None = None
         self.cars: list[Car] = []
-        self.noms_circuits = ["Anneau", "Désert", "Montagne"] # a remplacer par une liste de circuits réels
+        self.noms_circuits = ["Prairie", "Glacier", "Canyon"] # Le nom des circuits qui va s'afficher sur le menu
         self.index_selection: int = 0 #indice du circuit sélectionné dans la liste des circuits 
 
         #a modifier les 2 apres la fonctionalite bloc implementer
