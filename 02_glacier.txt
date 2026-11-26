@@ -1,0 +1,18 @@
+# Circuit 2 : parcours en escalier avec beaucoup de glace.
+# Tout ce qui n'est pas la piste est du vide.
+name: Glacier
+laps: 3
+start_angle: 0
+---
+V. V. V. V. V. V. V. V. V. V. V. V. V. V. V. V.
+V. R. R. I. Ic I. I. R. R. V. V. V. V. V. V. V.
+V. R. R. I. Ic I. I. R. R. V. V. V. V. V. V. V.
+V. G. G. V. V. V. V. I. I. V. V. V. V. V. V. V.
+V. G. G. V. V. V. V. R. R. D. Db D. DB R. R. V.
+V. G. G. V. V. V. V. R. R. D. Db D. DB I. I. V.
+V. Gd Gd V. V. V. V. V. V. V. V. V. V. I. I. V.
+V. G. G. V. V. V. V. V. V. V. V. V. V. Ia Ia V.
+V. G. G. V. V. V. V. V. V. V. V. V. V. I. I. V.
+V. R. R. R1 R. R. RL R. R. R. RB R. R. R. R. V.
+V. R. R. R2 R. R. RL R. R. R. RB R. R. R. R. V.
+V. V. V. V. V. V. V. V. V. V. V. V. V. V. V. V.
