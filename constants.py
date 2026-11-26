@@ -1,5 +1,9 @@
 import os
 
+# ======================================================================
+# PARAMÈTRES GÉNÉRAUX
+# ======================================================================
+
 WINDOW_WIDTH = 1024
 WINDOW_HEIGHT = 768
 FPS = 60
@@ -8,17 +12,31 @@ TILE_SIZE = 64
 GRID_COLS = 16
 GRID_ROWS = 12
 
+# ======================================================================
+# PARAMÈTRES VOITURE
+# ======================================================================
+
 CAR_ACCELERATION = 0.05
+CAR_DECELERATION = 0.05
+CAR_TURN_SPEED = 1
+
 CAR_WIDTH = 30
 CAR_HEIGHT = 50
 
+# ======================================================================
+# ÉTATS DU JEU
+# ======================================================================
 
 class GameState:
     MENU = "menu"
+    CIRCUIT_SELECT = "circuit_select"
     RACING = "racing"
 
 
-# --- Couleurs UI ---
+# ======================================================================
+# COULEURS UI
+# ======================================================================
+
 COLOR_BG = (15, 15, 25)
 COLOR_TEXT = (240, 240, 240)
 COLOR_ACCENT = (255, 200, 0)
@@ -27,28 +45,50 @@ COLOR_PANEL_BORDER = (60, 60, 100)
 
 
 # ======================================================================
-# AJOUTS PARTIE "TERRAINS ET CIRCUITS"
+# PARAMÈTRES GÉNÉRAUX DE LA PHYSIQUE DU DRIFT
 # ======================================================================
 
-# Dossier contenant les fichiers texte des circuits (à côté de ce fichier)
-CIRCUITS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "circuits")
+SPEED_MIN = 1.5
+STEERING_MIN = 0.5
 
-# --- Boost (valeurs par défaut d'un BoostBlock) ---
-# La force est un bonus d'accélération, la durée est en nombre de frames.
-# Ces valeurs sont à régler avec la partie "Voiture et contrôles".
+MAX_SPEED = 5.0
+MAX_REVERSE = -2.5
+
+AIR_FRICTION = 0.005
+DRIFT_FRICTION = 0.025
+
+K_NRML = 0.15
+K_DRIFT = 0.025
+
+
+# ======================================================================
+# CIRCUITS
+# ======================================================================
+
+# Dossier contenant les fichiers texte des circuits
+# (à côté de ce fichier)
+CIRCUITS_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "circuits"
+)
+
+
+# ======================================================================
+# BOOST
+# ======================================================================
+
+# Force du boost : bonus d'accélération
 BOOST_STRENGTH = 0.15
+
+# Durée du boost en frames (60 FPS = 1 seconde)
 BOOST_DURATION = 60
 
-# --- Propriétés physiques des terrains ---
+
+# ======================================================================
+# PROPRIÉTÉS PHYSIQUES DES TERRAINS
 # Format : (traction, drift_threshold, drift_friction)
-#   traction         : facilité à accélérer / freiner (1.0 = maximale)
-#   drift_threshold  : angle (en radians) entre l'orientation de la voiture
-#                      et sa vitesse au-delà duquel elle dérape.
-#                      Plus il est grand, plus il est difficile de déraper.
-#   drift_friction   : proportion de vitesse perdue par frame pendant un
-#                      dérapage (0 = aucun frottement, 1 = arrêt immédiat)
-# Ce sont des valeurs de départ, à ajuster en jouant.
+# ======================================================================
+
 TERRAIN_STATS = {
     "road":  (1.0, 0.80, 0.080),
     "grass": (0.6, 0.50, 0.050),
@@ -57,7 +97,11 @@ TERRAIN_STATS = {
     "void":  (0.0, 0.00, 0.000),
 }
 
-# --- Couleurs des terrains ---
+
+# ======================================================================
+# COULEURS DES TERRAINS
+# ======================================================================
+
 TERRAIN_COLORS = {
     "road":  (85, 85, 95),
     "grass": (60, 140, 60),
@@ -66,11 +110,17 @@ TERRAIN_COLORS = {
     "void":  (10, 10, 18),
 }
 
-# --- Couleurs des symboles de blocs (clé = label du bloc) ---
+
+# ======================================================================
+# COULEURS DES BLOCS
+# ======================================================================
+
+# Clé = label du bloc
+
 BLOCK_COLORS = {
-    "1": (255, 90, 90),     # départ joueur 1
-    "2": (90, 150, 255),    # départ joueur 2
-    "C": (255, 200, 0),     # point de passage
-    "L": (240, 240, 240),   # ligne d'arrivée
-    "B": (0, 220, 130),     # boost
+    "1": (255, 90, 90),      # Départ joueur 1
+    "2": (90, 150, 255),     # Départ joueur 2
+    "C": (255, 200, 0),       # Point de passage (checkpoint)
+    "L": (240, 240, 240),     # Ligne d'arrivée
+    "B": (0, 220, 130),       # Boost
 }
