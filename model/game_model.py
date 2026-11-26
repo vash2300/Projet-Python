@@ -53,10 +53,13 @@ class GameModel:
             self.index_selection = len(self.noms_circuits) - 1
 
     def load_circuit(self) -> None:
-        grid = [[RoadTile(col=col_idx, row=row_idx)
-                for row_idx in range(GRID_COLS)] for col_idx in range(GRID_ROWS)]
-        self.circuit = Circuit(grid=grid)
-        self.spawn_car()
+       """Charge le circuit choisi dans le menu depuis le dossier circuits/,
+        puis place les voitures.
+        """
+       fichiers = Circuit.list_files() # les fichiers .txt du dossier circuits
+       fichier = fichiers[self.index_selection] # celui choisi dans le menu
+       self.circuit= Circuit.from_file(fichier)# lit le fichier et crée les cases
+       self.spawn_car()
 
     def spawn_car(self) -> None:
         """Crée les deux voitures côte à côte.

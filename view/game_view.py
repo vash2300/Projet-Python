@@ -5,6 +5,7 @@ from constants import (
     GameState
 )
 from model.game_model import GameModel
+from view.circuit_renderer import CircuitRenderer
 
 
 class GameView:
@@ -12,6 +13,7 @@ class GameView:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.font = pygame.font.SysFont("Arial", 24)
+        self.circuit_renderer = CircuitRenderer()   # dessine le circuit(terrains + blocs)
 
     def draw(self, model: GameModel) -> None:
         self.screen.fill(COLOR_BG)
@@ -69,14 +71,9 @@ class GameView:
 
     def _draw_racing(self, model: GameModel) -> None:
 
-        for row_idx, row in enumerate(model.circuit.grid):
-            for col_idx, tile in enumerate(row):
-                sprite = tile.get_sprite(TILE_SIZE)
-                self.screen.blit(
-                    sprite, (col_idx * TILE_SIZE, row_idx * TILE_SIZE))
-
         if model.circuit is None:
             return
+        self.circuit_renderer.draw(self.screen, model.circuit)
 
         # Dessiner les deux voitures
         for car in model.cars:
