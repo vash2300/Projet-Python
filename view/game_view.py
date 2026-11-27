@@ -81,6 +81,8 @@ class GameView:
 
         # Dessiner les deux voitures
         for car in model.cars:
+            if car.boost_timer > 0:
+                self._draw_halo_boost(car)
             surf, rect = car.get_rotated_sprite()
             self.screen.blit(surf, rect)
 
@@ -142,5 +144,19 @@ class GameView:
         aide = self.font.render("Entrée : retour au menu", True, COLOR_TEXT)
         self.screen.blit(aide, aide.get_rect(center=(cx, cy + 40)))
 
+    def _draw_halo_boost(self,car) -> None:
+        """Dessine un halo jaune semi-transparent sous une voiture boostée.
+        car : Voiture dont le boost est actif.
+        """
+        rayon = 30                                  # un peu plus grand que la voiture
+        taille = rayon * 2
 
+        # Feuille transparente juste assez grande pour le cercle
+        halo = pygame.Surface((taille, taille), pygame.SRCALPHA)
+        pygame.draw.circle(halo, (255, 255, 0, 110), (rayon, rayon), rayon)
+
+        # blit place le coin haut-gauche, on recule d'un rayon pour centrer sur la voiture
+        x = int(car.x) - rayon
+        y = int(car.y) - rayon
+        self.screen.blit(halo, (x, y))
         
