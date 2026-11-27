@@ -84,6 +84,8 @@ class GameController:
             self.handle_menu_key(key)
         elif state == GameState.CIRCUIT_SELECT:
             self.handle_select_key(key)
+        elif state == GameState.FINISHED:
+            self.handle_finished_key(key)
 
     def handle_menu_key(self, key: int) -> None:
         """
@@ -119,6 +121,11 @@ class GameController:
             self.model.state = GameState.RACING
         elif key == pygame.K_ESCAPE:
             self.model.state = GameState.MENU
+
+    def handle_finished_key(self, key:int)->None:
+        if key == pygame.K_ESCAPE or key == pygame.K_RETURN:
+            self.model.retour_menu()
+
 
     def update(self) -> None:
         """
