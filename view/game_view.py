@@ -25,6 +25,9 @@ class GameView:
         elif model.state == GameState.RACING:
             self._draw_racing(model)
             self._draw_tours(model)
+        elif model.state == GameState.FINISHED:
+            self._draw_racing(model)
+            self._draw_victoire(model)
         pygame.display.flip()
 
     def _draw_menu(self, model: GameModel) -> None:
@@ -108,6 +111,36 @@ class GameView:
                 texte += "   BOOST !"
             image = self.font.render(texte, True, couleur)
             self.screen.blit(image, position)
+
+    def _draw_victoire(self, model: GameModel) -> None:
+        """Écran de victoire : nom du gagnant au centre de l'écran"""
+        gagnant = model.race.winner          # le Joueur qui a gagné
+        numero = gagnant.numero
+
+        # block semi_transparent superposé sur le racing
+        shade = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+        shade.fill((0, 0, 0, 160))
+        self.screen.blit(shade, (0, 0))
+
+        cx = WINDOW_WIDTH // 2
+        cy = WINDOW_HEIGHT // 2
+
+        # Cadre derrière le message
+        cadre = pygame.Rect(0, 0, 640, 200)
+        cadre.center = (cx, cy)
+        pygame.draw.rect(self.screen, COLOR_PANEL, cadre, border_radius=12)
+        pygame.draw.rect(self.screen, COLOR_PANEL_BORDER, cadre, 3, border_radius=12)
+
+        # Message dans la couleur du gagnant
+        if numero == 1:
+            couleur = (255, 0, 0)
+        else:
+            couleur = (0, 0, 255)
+        titre = self.font.render(f"Joueur {numero} gagne !", True, couleur)
+        self.screen.blit(titre, titre.get_rect(center=(cx, cy - 30)))
+
+        aide = self.font.render("Entrée : retour au menu", True, COLOR_TEXT)
+        self.screen.blit(aide, aide.get_rect(center=(cx, cy + 40)))
 
 
         
