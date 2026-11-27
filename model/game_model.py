@@ -34,11 +34,7 @@ class GameModel:
         self.cars: list[Car] = []
         self.noms_circuits = ["Prairie", "Glacier", "Canyon"] # Le nom des circuits qui va s'afficher sur le menu
         self.index_selection: int = 0 #indice du circuit sélectionné dans la liste des circuits 
-
-        #a modifier les 2 apres la fonctionalite bloc implementer
-        self.n_tours = 3              # nombre de tours pour gagner
-        self.tours = [0, 0]           # tours terminés : [joueur 1, joueur 2]
-
+        
         self.joueurs = []     # joueurs 1 et 2
         self.race = None      # course en cours
 
@@ -102,3 +98,10 @@ class GameModel:
             car.update_position()
             car.update_boost()
         self.race.update()
+        if self.race.winner: #un joueur à terminer tous les tours
+            self.state = GameState.FINISHED
+
+    def retour_menu(self) -> None:
+        """Termine la course et revient au menu principal."""
+        self.state = GameState.MENU
+        self.course = None
