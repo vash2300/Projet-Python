@@ -1,7 +1,8 @@
 import pygame
 import math
 from constants import (CAR_ACCELERATION, CAR_WIDTH, CAR_HEIGHT, TILE_SIZE, CAR_DECELERATION, CAR_TURN_SPEED, MAX_SPEED)
-
+#Imports des cstes pr le drift
+from constants import (SPEED_MIN, STEERING_MIN, MAX_SPEED, MAX_REVERSE, AIR_FRICTION, DRIFT_FRICTION, K_NRML, K_DRIFT, TERRAIN_STATS)
 
 
 class Car:
@@ -79,20 +80,56 @@ class Car:
     # Implémentation des virages : Tourner à droite/gauche
     def turn(self, direction: int) -> None:
         """
-        Méthode permettant de faire tourner la voiture.
+        Méthode permettant de faire tourner la voiture et mémorise le braquage du volant.
         l'angle de la voiture change en fonction de la direction (gauche : 1 et droite : -1) 
         à la même vitesse que accel et decel
         consigne : Tourner à gauche : augmente l’angle de braquage et Tourner à droite : diminue l’angle
         """
+        self.steering = direction #Mémorisation de la direction (input joueur)
+
         if self.speed > 0.1:
-            self.angle += direction #* CAR_TURN_SPEED
+            self.angle += direction * CAR_TURN_SPEED
         elif self.speed < -0.1:
-            self.angle -= direction #* CAR_TURN_SPEED
+            self.angle -= direction * CAR_TURN_SPEED
         
         """ Code de base fonctionne tres bien avec Drive mais pas Reverse
         if self.speed != 0 : # Pour éviter de tourner sur place
         self.angle += direction #* CAR_TURN_SPEED # gauche => direction = +1 et droite => direction = -1
         """
+
+    def reset_steering(self) -> None:
+        """
+        Reset la direction demandée par le joueur.
+
+        A chaque frame, la méthode est appelée avant de recup les nouveaux inputs joueur.
+        """
+        self.steering = 0
+
+    def calculate_drift(self, terrain: str = "road") -> None:
+        """
+        Parameters
+        ----------
+        terrain : str
+            Terrain sur lequel se trouve la voiture
+        """
+        traction, drift_threshold, drift_friction = TERRAIN_STATS.get(terrain, TERRAIN_STATS["road"])  #On recup les prop physiques du terrain
+        
+        speed_factor = min(abs(self.speed) / MAX_SPEED, 1.0) # Calcul du facteur de vitesse (valeur entre 0 et 1)
+        steering_factor = abs(self.steering) # intensité du drift si les conditions sont remplies
+        potential_drift = speed_factor * steering_factor # Valeur du drift si conditions = true
+
+        # Conditions pour déclancher le drift : si la vitesse >= Vitesse_min pour drifter et Braquage >= Braquage_min pr drifter et La valeur du drift >= seuil pour pouvoir drifter sur le terrain en question
+        self.drifting = (self.speed >= SPEED_MIN and steering_factor >= STEERING_MIN and potential_drift >= drift_threshold)
+
+        # Si les conditions sont remplies, l'intensité du drift voulue/ciblée = l'intensité potentiel de drift
+        if self.drifting:
+            target_intensity = potential_drift
+        else:
+            target_intensity = 0.0
+
+        drift_speed = 0.10 if self.drift_intensity < target_intensity else 0.05 # On va faire evoluer le drift progressivement (les valeurs peuvent changer)
+        self.drift_intensity += (target_intensity - self.drift_intensity) * drift_speed # Evolution  de l'intensité
+        self.drift_intensity = max(0.0,min(self.drift_intensity, 1.0)) # Pour avoir une intensité entre 0 et 1
 
     def update_position(self) -> None:
         """
